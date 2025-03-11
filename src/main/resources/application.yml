@@ -1,0 +1,36 @@
+spring:
+  logging:
+    level:
+      com.github.benmanes.caffeine.cache: TRACE
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/tenpo_db
+    username: tenpo_user
+    password: tenpo_pass
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+  cache:
+    type: caffeine
+
+server:
+  port: 8080
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "health"
+          - "metrics"
+          - "caches"
+  cache:
+    caffeine:
+      enabled: true
