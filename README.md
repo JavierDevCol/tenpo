@@ -20,14 +20,14 @@ Este proyecto es una API REST desarrollada con **Spring Boot 3**, **Java 21** y 
 
 ### 2. Levantar los servicios con Docker
 ```sh
-    docker-compose up -d
+    docker-compose up -d --build
 ```
-Esto iniciará una instancia de **PostgreSQL** en `localhost:5432`.
+Esto iniciará una instancia de **PostgreSQL y de la API ** en `localhost:5432 y localhost:8080`.
 
 ### 3. Construir y ejecutar la API
 ```sh
-    mvn clean install
-    mvn spring-boot:run
+    ./gradlew clean build
+    ./gradlew bootRun
 ```
 La API estará disponible en `http://localhost:8080`
 
@@ -49,14 +49,43 @@ La API estará disponible en `http://localhost:8080`
 ```
 **Respuesta:**
 ```json
-    [
-      {
-        "timestamp": "2025-03-10T12:00:00",
-        "endpoint": "/api/calculate",
-        "requestParams": "num1=5&num2=5",
-        "response": "11"
-      }
-    ]
+{
+  "totalPages": 0,
+  "totalElements": 0,
+  "size": 0,
+  "content": [
+    {
+      "id": 0,
+      "response": "string",
+      "timestamp": "2025-03-13T23:27:47.502Z",
+      "endpoint": "string",
+      "requestParams": "string",
+      "status": "string"
+    }
+  ],
+  "number": 0,
+  "sort": {
+    "empty": true,
+    "sorted": true,
+    "unsorted": true
+  },
+  "first": true,
+  "last": true,
+  "numberOfElements": 0,
+  "pageable": {
+    "offset": 0,
+    "sort": {
+      "empty": true,
+      "sorted": true,
+      "unsorted": true
+    },
+    "pageNumber": 0,
+    "pageSize": 0,
+    "paged": true,
+    "unpaged": true
+  },
+  "empty": true
+}
 ```
 
 ### 🔹 Límite de tasa
@@ -68,7 +97,7 @@ Si se hacen más de 3 solicitudes por minuto, la API responderá con:
 ## 🧪 Pruebas
 Ejecutar las pruebas unitarias con:
 ```sh
-    mvn test
+    ./gradlew test
 ```
 
 ## 📦 Docker

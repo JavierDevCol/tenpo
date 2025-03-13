@@ -19,7 +19,7 @@ public class RateLimitingFilter implements WebFilter {
 	public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {
 		String path = exchange.getRequest().getURI().getPath();
 
-		if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui") || path.startsWith("/swagger-ui.html")) {
+		if (path.startsWith("/webjars") || path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui") || path.startsWith("/swagger-ui.html")) {
 			return chain.filter(exchange);
 		}
 

@@ -16,6 +16,26 @@ services:
     networks:
       - tenpo_network
 
+  api:
+    build:
+      context: .
+      dockerfile: src/main/docker/Dockerfile
+    container_name: tenpo_api
+    restart: always
+    depends_on:
+      - postgres
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/tenpo_db
+      SPRING_DATASOURCE_USERNAME: tenpo_user
+      SPRING_DATASOURCE_PASSWORD: tenpo_pass
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    ports:
+      - "8080:8080"
+    networks:
+      - tenpo_network
+    command: >
+      sh -c "./gradlew build && java -jar build/libs/tenpo-0.0.1-SNAPSHOT.jar"
+
 networks:
   tenpo_network:
     driver: bridge

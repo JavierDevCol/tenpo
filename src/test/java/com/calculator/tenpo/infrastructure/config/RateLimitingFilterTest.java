@@ -1,57 +1,59 @@
 package com.calculator.tenpo.infrastructure.config;
 
 
-import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Refill;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.http.server.reactive.MockServerHttpRequest;
 import org.springframework.mock.web.server.MockServerWebExchange;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
-import java.time.Duration;
+import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
+@ExtendWith(MockitoExtension.class)
 class RateLimitingFilterTest {
 
+	@Mock
 	private Bucket bucket;
-	private com.calculator.tenpo.infrastructure.config.RateLimitingFilter filter;
+
+	@Mock
 	private WebFilterChain filterChain;
+
+	@InjectMocks
+	private RateLimitingFilter rateLimitingFilter;
+
+	private MockServerWebExchange exchange;
 
 	@BeforeEach
 	void setUp() {
-		Bandwidth limit = Bandwidth.classic(3, Refill.greedy(3, Duration.ofMinutes(1)));
-		this.bucket = Bucket.builder().addLimit(limit).build();
-		this.filter = new RateLimitingFilter(bucket);
-		this.filterChain = mock(WebFilterChain.class);
+		exchange = MockServerWebExchange.from(MockServerHttpRequest.get("/api/test").build());
 	}
 
 	@Test
-	void shouldAllowRequestWhenTokensAvailable() {
-		MockServerWebExchange exchange = MockServerWebExchange.from(
-				org.springframework.mock.http.server.reactive.MockServerHttpRequest.get("/").build()
-		);
+	void shouldAllowRequestWhenTokensAreAvailable() {
+		when(bucket.tryConsume(1)).thenReturn(true);
 		when(filterChain.filter(exchange)).thenReturn(Mono.empty());
 
-		filter.filter(exchange, filterChain).block();
-		assertEquals(HttpStatus.OK, exchange.getResponse().getStatusCode());
+		rateLimitingFilter.filter(exchange, filterChain).block();
+
+		verify(filterChain, times(1)).filter(exchange);
+		assertThat(exchange.getResponse().getStatusCode()).isNull();
 	}
 
 	@Test
 	void shouldRejectRequestWhenRateLimitExceeded() {
-		for (int i = 0; i < 3; i++) {
-			bucket.tryConsume(1);
-		}
-		MockServerWebExchange exchange = MockServerWebExchange.from(
-				org.springframework.mock.http.server.reactive.MockServerHttpRequest.get("/").build()
-		);
+		when(bucket.tryConsume(1)).thenReturn(false);
 
-		filter.filter(exchange, filterChain).block();
-		assertEquals(HttpStatus.TOO_MANY_REQUESTS, exchange.getResponse().getStatusCode());
+		rateLimitingFilter.filter(exchange, filterChain).block();
+
+		assertThat(exchange.getResponse().getStatusCode()).isEqualTo(HttpStatus.TOO_MANY_REQUESTS);
+		verify(filterChain, never()).filter(exchange);
 	}
 }

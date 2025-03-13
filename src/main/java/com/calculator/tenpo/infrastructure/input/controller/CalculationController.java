@@ -1,7 +1,8 @@
-package com.calculator.tenpo.infrastructure.controller;
+package com.calculator.tenpo.infrastructure.input.controller;
 
 
-import com.calculator.tenpo.infrastructure.service.CalculationService;
+import com.calculator.tenpo.aplication.port.input.CalculationPort;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +15,11 @@ import java.math.BigDecimal;
 @RequiredArgsConstructor
 public class CalculationController {
 
-	private final CalculationService calculationService;
+	private final CalculationPort calculationPort;
 
 	@GetMapping
-	public Mono<ResponseEntity<BigDecimal>> calculate(@RequestParam BigDecimal num1, @RequestParam BigDecimal num2) {
-		return calculationService.calculateWithPercentage(num1, num2)
+	public Mono<ResponseEntity<BigDecimal>> calculate(@RequestParam @NonNull BigDecimal num1, @RequestParam @NonNull BigDecimal num2) {
+		return calculationPort.calculateWithPercentage(num1, num2)
 				.map(ResponseEntity::ok)
 				.defaultIfEmpty(ResponseEntity.badRequest().build());
 	}

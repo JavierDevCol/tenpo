@@ -1,4 +1,4 @@
-package com.calculator.tenpo.domain.model.domain;
+package com.calculator.tenpo.infrastructure.model.entity;
 
 
 import jakarta.persistence.*;
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ApiCallHistory {
+public class ApiCallHistoryEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
