@@ -14,7 +14,7 @@ Este proyecto es una API REST desarrollada con **Spring Boot 3**, **Java 21** y 
 ## 🛠️ Instalación
 ### 1. Clonar el repositorio
 ```sh
-    git clone https://github.com/tu-usuario/challenge-backend-2025.git
+    git clone https://github.com/JavierDevCol/tenpo.git
     cd challenge-backend-2025
 ```
 
@@ -103,8 +103,8 @@ Ejecutar las pruebas unitarias con:
 ## 📦 Docker
 Para construir y ejecutar la imagen de la API:
 ```sh
-    docker build -t challenge-backend-2025 .
-    docker run -p 8080:8080 challenge-backend-2025
+    docker build -t tenpo .
+    docker run -p 8080:8080 tenpo
 ```
 
 

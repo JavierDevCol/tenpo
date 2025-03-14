@@ -1,4 +1,4 @@
-package com.calculator.tenpo.infrastructure.error;
+package com.calculator.tenpo.infrastructure.config.error;
 
 
 import com.calculator.tenpo.domain.model.error.ExceptionCalculating;
