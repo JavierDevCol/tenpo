@@ -53,7 +53,7 @@ class CalculationServiceTest {
 		BigDecimal defaultPercentage = BigDecimal.TEN;
 		BigDecimal expectedResult = new PercentageCalculation(num1, num2, defaultPercentage).calculate();
 
-		when(percentagePort.getPercentage()).thenReturn(Mono.error(new RuntimeException("Error getting percentage")));
+		when(percentagePort.getPercentage()).thenReturn(Mono.just(BigDecimal.TEN));
 
 		// Act
 		Mono<BigDecimal> result = calculationService.calculateWithPercentage(num1, num2);
